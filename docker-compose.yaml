@@ -1,0 +1,26 @@
+name: roboshop
+services:
+  mongodb:
+    build: ./mongodb
+    image: vinod900/mongodb:v1 # docker build -t vinod900/mongodb:v1
+    container_name: mongodb # docker run -d --network roboshop vinod900/mongodb:v1
+  catalogue:
+    build: ./catalogue
+    image: vinod900/catalogue.v1
+    container_name: catalogue
+    depends_on:
+    - mongodb
+  frontend:
+    build: ./frontend
+    image: vinod900/frontend:v1
+    container_name: frontend
+    ports:
+    - "80:80"
+    depends_on:
+    - catalogue
+networks:
+  default: # this means all the services in this file use this network
+    name: roboshop
+    driver: bridge
+    external: false # if true it should be created manually, if false docker creates this network
+    
