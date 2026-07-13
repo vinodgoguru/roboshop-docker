@@ -19,6 +19,9 @@ services:
     depends_on:
     - catalogue
     - user
+    - cart
+    - shipping
+    - payment
   user:
     build: ./user
     image: vinod900/user:v1
@@ -41,9 +44,43 @@ services:
     depends_on:
     - redis
     - catalogue
+  shipping:
+    build: ./shipping
+    image: vinod900/shipping:v1
+    container_name: shipping
+    environment:
+      CART_ENDPOINT: "cart:8080"
+      DB_HOST: mysql
+    depends_on:
+    - mysql
+    - cart
+  payment:
+    build: ./payment
+    image: vinod900/payment:v1
+    container_name: payment
+    environment:
+      CART_HOST: "cart"
+      CART_HOST: 8080
+      USER_HOST: user
+      USER_PORT: 8080
+      AMQP_HOST: rabbitmq
+      AMQP_USER: roboshop
+      AMQP_PASS: roboshop123
+    depends_on
+    - cart
+    - user
+    - rabbitmq
   redis:
     image: redis:7
     container_name: redis 
+  mysql:
+    image: vinod900/mysql:v1
+    build: ./mysql
+    container_name: mysql
+    command: --mysql-native-password=ON --innob-lock_wait_timeout=120
+    environment:
+      MYSQL_ROOT_PASSWORD: "RoboShop@1"
+      
 networks:
   default: # this means all the services in this file use this network
     name: roboshop
