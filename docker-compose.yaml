@@ -2,19 +2,19 @@ name: roboshop
 services:
   mongodb:
     build: ./mongodb
-    image: joindevops/mongodb:v1 # docker build -t joindevops/mongodb:v1
-    container_name: mongodb # docker run -d --network roboshop joindevops/mongodb:v1
+    image: vinod900/mongodb:v1 # docker build -t vinod900/mongodb:v1
+    container_name: mongodb # docker run -d --network roboshop vinod900/mongodb:v1
     volumes:
     - mongodb:/data/db # mongodb stores data in /data/db directory
   catalogue:
     build: ./catalogue
-    image: joindevops/catalogue:v1
+    image: vinod900/catalogue:v1
     container_name: catalogue
     depends_on:
     - mongodb
   frontend:
     build: ./frontend
-    image: joindevops/frontend:v1
+    image: vinod900/frontend:v1
     container_name: frontend
     ports:
     - "80:80"
@@ -26,7 +26,7 @@ services:
     - payment
   user:
     build: ./user
-    image: joindevops/user:v1
+    image: vinod900/user:v1
     container_name: user
     environment:
       MONGO: true
@@ -37,7 +37,7 @@ services:
     - mongodb
   cart:
     build: ./cart
-    image: joindevops/cart:v1
+    image: vinod900/cart:v1
     container_name: cart
     environment:
       REDIS_HOST: redis
@@ -48,7 +48,7 @@ services:
     - catalogue
   shipping:
     build: ./shipping
-    image: joindevops/shipping:v1
+    image: vinod900/shipping:v1
     container_name: shipping
     environment:
       CART_ENDPOINT: "cart:8080"
@@ -58,7 +58,7 @@ services:
     - cart
   payment:
     build: ./payment
-    image: joindevops/payment:v1
+    image: vinod900/payment:v1
     container_name: payment
     environment:
       CART_HOST: "cart"
@@ -78,7 +78,7 @@ services:
     volumes:
     - redis:/data
   mysql:
-    image: joindevops/mysql:v1
+    image: vinod900/mysql:v1
     build: ./mysql
     container_name: mysql
     command: --mysql-native-password=ON --innodb-lock_wait_timeout=120
